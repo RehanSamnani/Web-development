@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>DOM</title>
+</head>
+<body>
+    <p>YouTube  Subscribe Button</p>
+    <button class="js-yt-sub-button" onclick="yt_sub()">Subscribe</button>
+    <br>
+    <p>Rock paper Scissor</p>
+    <a href="">Click here</a>
+    <br>
+    <br>
+    
+    Amazon Shipping Calculator
+    <br>
+     Order under $40=+$10 shipping.
+    <br>
+     Order over $40=+$10 shipping.
+    <br>
+        
+        <input type="text" placeholder="Cost of order" class="js-cost-cal">
+        <button onclick="calculate_cost()">Calculate</button>
+        <p class="js-final-cost"></p> <!-- Add this line -->
+
+    <script>
+       function calculate_cost() {
+         let cost = Number(document.querySelector('.js-cost-cal').value);
+         let finalCost;
+         if (cost < 40) {
+           finalCost = cost + 10; // Add $10 shipping
+         } else {
+           finalCost = cost; // Free shipping
+         }
+         document.querySelector('.js-final-cost').textContent = `Final cost: $${finalCost}`;
+       }
+
+       function yt_sub(){
+        document.querySelector('.js-yt-sub-button').innerHTML="Subscribed";
+       }
+
+    </script>
+</body>
+</html>

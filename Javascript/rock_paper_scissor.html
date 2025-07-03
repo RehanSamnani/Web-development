@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Paper Scissors</title>
+  <style>
+    body {
+      background: #181818;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .heading {
+      font-weight: bold;
+      font-size: 2.2rem;
+      margin-top: 40px;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      color: #ffd700;
+      text-shadow: 1px 1px 8px #000;
+    }
+    .container {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .circle {
+      width: 80px;
+      height: 80px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 48px;
+      background: #222;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px #0004;
+    }
+    .circle:hover {
+      border-color: #ffd700;
+      box-shadow: 0 4px 16px #ffd70044;
+    }
+    p {
+      font-size: 1.15rem;
+      margin: 12px 0;
+      padding: 8px 18px;
+      background: #232323;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px #0002;
+      color: #e0e0e0;
+      max-width: 350px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .score {
+      font-weight: bold;
+      color: #ffd700;
+      background: #181818;
+      box-shadow: none;
+      font-size: 1.1rem;
+      margin-top: 18px;
+    }
+    .result {
+      font-size: 1.3rem;
+      color: #00e676;
+      background: #181818;
+      box-shadow: none;
+      font-weight: bold;
+    }
+    .move {
+      color: #90caf9;
+      background: #181818;
+      box-shadow: none;
+      font-size: 1.1rem;
+    }
+    .reset-btn {
+      margin-top: 18px;
+      padding: 8px 22px;
+      font-size: 1rem;
+      background: #ffd700;
+      color: #181818;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px #0003;
+    }
+    .reset-btn:hover {
+      background: #fffde4;
+      color: #222;
+    }
+    .auto-btn {
+      margin-top: 18px;
+      padding: 8px 22px;
+      font-size: 1rem;
+      background: #ff5722;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px #0003;
+    }
+  </style>
+</head>
+<body>
+  <p class="heading">Rock Paper Scissors</p>
+  <div class="container">
+    <button class="circle" title="Rock" onclick="makeMove('rock')">✊</button>
+    <button class="circle" title="Paper" onclick="makeMove('paper')">🖐️</button>
+    <button class="circle" title="Scissors" onclick="makeMove('scissors')">✌️</button>
+  </div>
+
+  <p class="result"></p>
+  <p class="move"></p>
+  <p class="score">Win: 0, Losses: 0, Ties: 0</p>
+  <button class="reset-btn" onclick="resetScore()">Reset Score</button>
+  <button class="auto-btn" onclick="toggleAutoPlay(this)">Auto Play</button>
+
+  <script>
+    let score = {
+      wins: 0,
+      losses: 0,
+      ties: 0
+    };
+
+    // Load score from localStorage if available
+    const savedScore = JSON.parse(localStorage.getItem('score'));
+    if (savedScore) {
+      score = savedScore;
+      updateScore();
+    }
+
+    function makeMove(playerMove) {
+      const computerMove = pickComputerMove();
+      const resultElement = document.querySelector('.result');
+
+      if (playerMove === computerMove) {
+        resultElement.innerHTML = "Tie";
+        score.ties++;
+      } else if (
+        (playerMove === 'rock' && computerMove === 'scissors') ||
+        (playerMove === 'paper' && computerMove === 'rock') ||
+        (playerMove === 'scissors' && computerMove === 'paper')
+      ) {
+        resultElement.innerHTML = "You Win!";
+        score.wins++;
+      } else {
+        resultElement.innerHTML = "You Lose!";
+        score.losses++;
+      }
+      displayMove(playerMove, computerMove);
+      updateScore();
+      localStorage.setItem('score', JSON.stringify(score)); // Save score
+    }
+
+    function displayMove(playerMove, computerMove) {
+      const moveElement = document.querySelector('.move');
+      moveElement.innerHTML = "YOU: " + displayMoveIcon(playerMove) +
+        " vs " +
+        "COMPUTER: " + displayMoveIcon(computerMove);
+    }
+
+    function updateScore() {
+      const gameScore = document.querySelector('.score');
+      gameScore.innerHTML = "Win: " + score.wins + " Losses: " + score.losses + " Ties: " + score.ties;
+    }
+
+    function pickComputerMove() {
+      const randomNumber = Math.random();
+      if (randomNumber < 0.34) {
+        return 'rock';
+      } else if (randomNumber < 0.67) {
+        return 'paper';
+      } else {
+        return 'scissors';
+      }
+    }
+
+    function displayMoveIcon(move) {
+      if (move === 'rock') {
+        return '✊';
+      } else if (move === 'paper') {
+        return '🖐️';
+      } else if (move === 'scissors') {
+        return '✌️';
+      }
+    }
+
+    function resetScore() {
+      score.wins = 0;
+      score.losses = 0;
+      score.ties = 0;
+      updateScore();
+      localStorage.setItem('score', JSON.stringify(score)); // Save reset score
+      document.querySelector('.result').innerHTML = '';
+      document.querySelector('.move').innerHTML = '';
+    }
+    // Auto Play Toggle Implementation
+    let isAutoPlaying = false;
+    let autoPlayTimer = null;
+
+    function toggleAutoPlay(button) {
+      if (!isAutoPlaying) {
+        isAutoPlaying = true;
+        button.innerHTML = "Stop Auto Play";
+        autoPlayTimer = setTimeout(function autoPlayLoop() {
+          let playerMove = pickComputerMove();
+          makeMove(playerMove);
+          autoPlayTimer = setTimeout(autoPlayLoop, 3000);
+        }, 0);
+      } else {
+        isAutoPlaying = false;
+        button.innerHTML = "Auto Play";
+        clearTimeout(autoPlayTimer);
+      }
+    }
+  </script>
+</body>
+</html>
